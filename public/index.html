@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion avec Google</title>
+    <!-- Chargement de la bibliothèque Google -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 20px;">
+        <h1>Connexion</h1>
+        <!-- Bouton de connexion Google -->
+        <div id="g_id_onload"
+             data-client_id="237831876540-9sl6octidt4fludbtp2qel45isd9a4ij.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div id="g_id_signin_button"></div>
+    </div>
+
+    <!-- Gestionnaire de réponse -->
+    <script>
+        function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+            
+            // Envoi des données au serveur pour validation
+            fetch('/auth/google/callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    credential: response.credential,
+                    token: response.credential
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Connexion réussie:', data))
+            .catch(error => console.error('Erreur:', error));
+        }
+
+        // Décodage du JWT
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+    </script>
+</body>
+</html>
