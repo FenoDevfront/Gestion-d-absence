@@ -9,6 +9,7 @@
 <body>
 
     <div class="container mt-4">
+        @include('flash-message')
         @yield('content')
     </div>
 
