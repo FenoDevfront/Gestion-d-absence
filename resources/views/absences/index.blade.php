@@ -1,4 +1,6 @@
-@extends('layout')
+@extends('layouts.app')
+
+@section('title', 'Liste des Absences')
 
 @section('content')
 <h2>Liste des Absences</h2>

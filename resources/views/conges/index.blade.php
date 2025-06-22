@@ -1,4 +1,6 @@
-@extends('layout')
+@extends('layouts.app')
+
+@section('title', 'Liste des conges')
 
 @section('content')
 <h2>Liste des Congés</h2>

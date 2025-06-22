@@ -1,4 +1,6 @@
-@extends('layout')
+@extends('layouts.app')
+
+@section('title', 'Liste des retards')
 
 @section('content')
 <h2>Liste des Retards</h2>
