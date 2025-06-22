@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller; // ✅ OBLIGATOIRE !
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class GoogleController extends Controller
 {
@@ -26,7 +27,7 @@ class GoogleController extends Controller
             return redirect('/')->withErrors(['error' => 'Code Google manquant']);
         }
 
-        // ⚙️ Échange le code contre un token d'accès
+        // Récupère le token d'accès
         $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
             'client_id' => env('GOOGLE_CLIENT_ID'),
             'client_secret' => env('GOOGLE_CLIENT_SECRET'),
@@ -38,41 +39,47 @@ class GoogleController extends Controller
         $tokens = $response->json();
 
         if (isset($tokens['access_token'])) {
-            $accessToken = $tokens['access_token'];
-            $userData = $this->getUserData($accessToken);
+            $userData = $this->getUserData($tokens['access_token']);
             $user = $this->findOrCreateUser($userData);
-            
-            auth()->login($user);
-            
-            return redirect()->intended('/');
+            Auth::login($user);
+            return redirect('/');  // redirect vers la home
         }
 
         return redirect('/')->withErrors(['error' => 'Authentification Google échouée']);
     }
 
-
     private function getUserData($accessToken)
     {
-        $response = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
-            'access_token' => $accessToken,
-        ]);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken,
+        ])->get('https://www.googleapis.com/oauth2/v3/userinfo');
 
         return $response->json();
     }
 
-    private function findOrCreateUser($userData)
+    private function findOrCreateUser($data)
     {
-        $user = \App\Models\User::where('google_id', $userData['sub'])->first();
+        // Cherche utilisateur existant par google_id ou email
+        $user = User::where('google_id', $data['sub'])
+                    ->orWhere('email', $data['email'])
+                    ->first();
 
-        if (!$user) {
-            $user = \App\Models\User::create([
-                'google_id' => $userData['sub'],
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'picture_url' => $userData['picture'] ?? null,
-            ]);
+        if ($user) {
+            // Si l'utilisateur existe mais n'a pas google_id, on l'ajoute
+            if (!$user->google_id) {
+                $user->google_id = $data['sub'];
+                $user->save();
+            }
+            return $user;
         }
 
-        return $user;
+        // Sinon crée un nouvel utilisateur
+        return User::create([
+            'google_id' => $data['sub'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'picture_url' => $data['picture'] ?? null,
+            'password' => bcrypt(str()->random(16)), // mot de passe factice
+        ]);
     }
 }

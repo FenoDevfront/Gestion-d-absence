@@ -26,6 +26,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('retards.index') }}">Retards</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('logout') }}" class="btn btn-outline-secondary">Se déconnecter</a>
+                    </li>
                 </ul>
             </div>
         </div>
