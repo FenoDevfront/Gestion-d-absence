@@ -32,4 +32,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('absences', AbsenceController::class);
     Route::resource('conges', CongeController::class);
     Route::resource('retards', RetardController::class);
+    Route::get('/users/autocomplete', [UserController::class, 'autocomplete'])->name('users.autocomplete');
 });

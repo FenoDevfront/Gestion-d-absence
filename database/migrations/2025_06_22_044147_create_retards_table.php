@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Requests\RetardStoreRequest;
+use App\Models\Retard;
 
 return new class extends Migration
 {
@@ -29,5 +31,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('retards');
+    }
+    
+    public function store(RetardStoreRequest $request)
+    {
+        Retard::create($request->validated());
+
+        return redirect()->route('retards.index')
+            ->with('success', 'Retard enregistré avec succès.');
     }
 };

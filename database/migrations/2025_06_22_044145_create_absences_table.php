@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Requests\AbsenceStoreRequest;
+use App\Models\Absence;
 
 return new class extends Migration
 {
@@ -28,5 +30,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('absences');
+    }
+
+    public function store(AbsenceStoreRequest $request)
+    {
+        Absence::create($request->validated());
+
+        return redirect()->route('absences.index')
+            ->with('success', 'Absence enregistrée avec succès.');
     }
 };

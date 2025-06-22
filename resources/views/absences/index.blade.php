@@ -42,8 +42,9 @@
 <form action="{{ route('absences.store') }}" method="POST" class="border p-3 rounded">
     @csrf
     <div class="mb-2">
-        <label>Employé (ID):</label>
-        <input type="number" name="user_id" class="form-control" required>
+        <label>Employé :</label>
+        <input type="text" id="user_search" class="form-control" placeholder="Tapez le nom ou email de l'employé" required>
+        <input type="hidden" name="user_id" id="user_id">
     </div>
     <div class="mb-2">
         <label>Date:</label>
@@ -63,4 +64,45 @@
     </div>
     <button class="btn btn-primary">Enregistrer</button>
 </form>
+<script>
+$(document).ready(function() {
+    $('#user_search').on('input', function() {
+        let query = $(this).val();
+
+        if(query.length < 2) {
+            $('#user_list').hide();
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('users.autocomplete') }}",
+            type: 'GET',
+            data: { term: query },
+            success: function(data) {
+                let html = '';
+                if(data.length > 0) {
+                    data.forEach(function(user) {
+                        html += `<button type="button" class="list-group-item list-group-item-action" data-id="${user.id}" data-label="${user.label}">${user.label}</button>`;
+                    });
+                } else {
+                    html = '<div class="list-group-item">Aucun résultat</div>';
+                }
+                $('#user_list').html(html).show();
+            }
+        });
+    });
+
+    $('#user_list').on('click', 'button', function() {
+        $('#user_id').val($(this).data('id'));
+        $('#user_search').val($(this).data('label'));
+        $('#user_list').hide();
+    });
+
+    $(document).click(function(e) {
+        if (!$(e.target).closest('#user_search, #user_list').length) {
+            $('#user_list').hide();
+        }
+    });
+});
+</script>
 @endsection
