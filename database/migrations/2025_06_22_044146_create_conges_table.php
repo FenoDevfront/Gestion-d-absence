@@ -9,14 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('conges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->string('motif')->nullable();
+            $table->string('type_conge');
+            $table->boolean('valide')->default(false);
             $table->timestamps();
         });
     }

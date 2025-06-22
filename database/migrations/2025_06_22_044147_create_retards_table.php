@@ -9,14 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('retards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date');
-            $table->time('heure_arrivee');
-            $table->string('motif')->nullable();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->datetime('heure_prevue');
+            $table->datetime('heure_reelle');
+            $table->string('motif');
+            $table->boolean('justifie')->default(false);
             $table->timestamps();
         });
     }

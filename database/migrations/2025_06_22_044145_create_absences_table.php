@@ -9,16 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date');
-            $table->string('motif')->nullable();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->date('date_absence');
+            $table->string('motif');
+            $table->boolean('justifiee')->default(false);
             $table->timestamps();
         });
-        
     }
 
     /**
