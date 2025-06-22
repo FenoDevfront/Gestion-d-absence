@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class Absence extends Model
+class Retard extends Model
 {
     protected $fillable = [
         'employee_id',
-        'date_absence',
+        'heure_prevue',
+        'heure_reelle',
         'motif',
-        'justifiee'
+        'justifie'
     ];
 
     public function employee(): BelongsTo

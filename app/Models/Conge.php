@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class Absence extends Model
+class Conge extends Model
 {
     protected $fillable = [
         'employee_id',
-        'date_absence',
-        'motif',
-        'justifiee'
+        'date_debut',
+        'date_fin',
+        'type_conge',
+        'valide'
     ];
 
     public function employee(): BelongsTo
