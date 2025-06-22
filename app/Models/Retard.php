@@ -13,7 +13,8 @@ class Retard extends Model
         'heure_prevue',
         'heure_reelle',
         'motif',
-        'justifie'
+        'justifie',
+        'status'
     ];
 
     public function employee(): BelongsTo

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('type_conge');
             $table->boolean('valide')->default(false);
             $table->timestamps();
+            $table->enum('status', ['en_attente', 'en_cours', 'refuse'])->default('en_attente');
         });
     }
 

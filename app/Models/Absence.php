@@ -12,7 +12,8 @@ class Absence extends Model
         'employee_id',
         'date_absence',
         'motif',
-        'justifiee'
+        'justifiee',
+        'status'
     ];
 
     public function employee(): BelongsTo

@@ -13,7 +13,8 @@ class Conge extends Model
         'date_debut',
         'date_fin',
         'type_conge',
-        'valide'
+        'valide',
+        'status'
     ];
 
     public function employee(): BelongsTo
