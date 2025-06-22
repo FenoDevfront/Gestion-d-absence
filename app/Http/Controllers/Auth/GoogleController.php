@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller; // ✅ OBLIGATOIRE !
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+
 
 class GoogleController extends Controller
 {
@@ -18,7 +20,22 @@ class GoogleController extends Controller
 
     public function handleGoogleCallback(Request $request)
     {
-        // ... (code existant pour la validation du token)
+        $code = $request->get('code');
+
+        if (!$code) {
+            return redirect('/')->withErrors(['error' => 'Code Google manquant']);
+        }
+
+        // ⚙️ Échange le code contre un token d'accès
+        $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
+            'client_id' => env('GOOGLE_CLIENT_ID'),
+            'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+            'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+        ]);
+
+        $tokens = $response->json();
 
         if (isset($tokens['access_token'])) {
             $accessToken = $tokens['access_token'];
@@ -27,16 +44,19 @@ class GoogleController extends Controller
             
             auth()->login($user);
             
-            // Redirection vers la page d'accueil après authentification
-            return redirect()->intended('/home');
+            return redirect()->intended('/');
         }
+
+        return redirect('/')->withErrors(['error' => 'Authentification Google échouée']);
     }
+
 
     private function getUserData($accessToken)
     {
         $response = Http::get('https://www.googleapis.com/oauth2/v3/userinfo', [
             'access_token' => $accessToken,
         ]);
+
         return $response->json();
     }
 
