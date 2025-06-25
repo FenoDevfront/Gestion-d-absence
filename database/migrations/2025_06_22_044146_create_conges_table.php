@@ -15,29 +15,21 @@ return new class extends Migration
     {
         Schema::create('conges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->string('type_conge');
-            $table->boolean('valide')->default(false);
+            $table->unsignedBigInteger('employee_id');
+            $table->date('date');
+            $table->string('reason')->nullable();
             $table->timestamps();
-            $table->enum('status', ['en_attente', 'en_cours', 'refuse'])->default('en_attente');
+            $table->string('status')->default('en_attente');
+
+            $table->foreign('employee_id')
+                ->references('id')
+                ->on('employees')
+                ->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('conges');
-    }
-    
-    public function store(CongeStoreRequest $request)
-    {
-        Conge::create($request->validated());
-
-        return redirect()->route('conges.index')
-            ->with('success', 'Congé enregistré avec succès.');
     }
 };

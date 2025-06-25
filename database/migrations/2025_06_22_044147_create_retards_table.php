@@ -15,29 +15,21 @@ return new class extends Migration
     {
         Schema::create('retards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
-            $table->datetime('heure_prevue');
-            $table->datetime('heure_reelle');
-            $table->string('motif');
-            $table->boolean('justifie')->default(false);
+            $table->unsignedBigInteger('employee_id');
+            $table->date('date');
+            $table->string('reason')->nullable();
             $table->timestamps();
-            $table->enum('status', ['en_attente', 'en_cours', 'refuse'])->default('en_attente');
+            $table->string('status')->default('en_attente');
+
+            $table->foreign('employee_id')
+                ->references('id')
+                ->on('employees')
+                ->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('retards');
-    }
-    
-    public function store(RetardStoreRequest $request)
-    {
-        Retard::create($request->validated());
-
-        return redirect()->route('retards.index')
-            ->with('success', 'Retard enregistré avec succès.');
     }
 };
