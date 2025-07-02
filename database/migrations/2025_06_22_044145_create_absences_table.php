@@ -10,16 +10,11 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id');
-            $table->date('date');
-            $table->string('reason')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->dateTime('date_debut');
+            $table->dateTime('date_fin');
+            $table->text('motif')->nullable();
             $table->timestamps();
-            $table->string('status')->default('en_attente');
-
-            $table->foreign('employee_id')
-                  ->references('id')
-                  ->on('employees')
-                  ->onDelete('cascade');
         });
     }
 

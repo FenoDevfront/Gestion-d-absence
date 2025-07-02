@@ -8,17 +8,18 @@ use App\Models\User;
 
 class Retard extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'employee_id',
-        'heure_prevue',
-        'heure_reelle',
+        'user_id',
+        'date_retard',
+        'duree',
         'motif',
-        'justifie',
         'status'
     ];
 
-    public function employee(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(User::class);
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Conge;
 use App\Models\User;
+use App\Http\Requests\CongeStoreRequest;
+use App\Http\Requests\CongeUpdateRequest;
 
 class CongeController extends Controller
 {

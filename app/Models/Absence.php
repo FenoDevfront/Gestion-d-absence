@@ -8,16 +8,18 @@ use App\Models\User;
 
 class Absence extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'employee_id',
-        'date_absence',
+        'user_id',
+        'date_debut',
+        'date_fin',
         'motif',
-        'justifiee',
         'status'
     ];
 
-    public function employee(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(User::class);
     }
 }

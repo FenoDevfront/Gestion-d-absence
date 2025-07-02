@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AbsenceStoreRequest extends FormRequest
+class AbsenceUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class AbsenceStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => 'required|exists:users,id',
-            'date_absence' => 'required|date',
-            'motif' => 'required|string|max:255',
+            'date_absence' => 'sometimes|required|date',
+            'motif' => 'sometimes|required|string|max:255',
             'justificatif' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
+            'status' => 'sometimes|required|in:en_attente,validee,rejetee',
         ];
     }
 }

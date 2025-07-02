@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Absence;
 use App\Models\User;
+use App\Http\Requests\AbsenceStoreRequest;
+use App\Http\Requests\AbsenceUpdateRequest;
 
 class AbsenceController extends Controller
 {

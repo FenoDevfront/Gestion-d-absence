@@ -1,100 +1,40 @@
 @extends('layouts.app')
 
-@section('title', 'Liste des retards')
-
 @section('content')
-<h2>Liste des Retards</h2>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-light">
-        <tr>
-            <th>Employé</th>
-            <th>Date</th>
-            <th>Motif</th>
-            <th>Statut</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse ($retards as $retard)
+<div class="container">
+    <h1>Liste des retards</h1>
+    <a href="{{ route('retards.create') }}" class="btn btn-primary">Nouveau retard</a>
+    <table class="table mt-3">
+        <thead>
             <tr>
-                <td>{{ $retard->user->name ?? 'Inconnu' }}</td>
-                <td>{{ \Carbon\Carbon::parse($retard->date)->format('d/m/Y') }}</td>
+                <th>Employé</th>
+                <th>Date</th>
+                <th>Durée (minutes)</th>
+                <th>Motif</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($retards as $retard)
+            <tr>
+                <td>{{ $retard->employee->name }}</td>
+                <td>{{ $retard->date_retard }}</td>
+                <td>{{ $retard->duree }}</td>
                 <td>{{ $retard->motif }}</td>
+                <td>{{ $retard->status }}</td>
                 <td>
-                    @if ($retard->status === 'en_cours')
-                        <span class="badge bg-info">En cours</span>
-                    @elseif ($retard->status === 'en_attente')
-                        <span class="badge bg-secondary">En attente</span>
-                    @elseif ($retard->status === 'refuse')
-                        <span class="badge bg-danger">Refusé</span>
-                    @else
-                        <span class="badge bg-light text-dark">Inconnu</span>
-                    @endif
+                    <a href="{{ route('retards.show', $retard) }}" class="btn btn-info">Voir</a>
+                    <a href="{{ route('retards.edit', $retard) }}" class="btn btn-warning">Modifier</a>
+                    <form action="{{ route('retards.destroy', $retard) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
                 </td>
             </tr>
-        @empty
-            <tr><td colspan="4">Aucune retard enregistrée.</td></tr>
-        @endforelse
-    </tbody>
-</table>
-
-<h4>Ajouter un retard</h4>
-<form action="{{ route('retards.store') }}" method="POST">
-    @csrf
-    <div class="mb-2">
-        <label>Employé :</label>
-        <input type="text" id="user_search" class="form-control" placeholder="Tapez le nom ou email de l'employé" required>
-        <input type="hidden" name="user_id" id="user_id">
-    </div>
-    <div class="mb-2">
-        <label>Date de retard:</label>
-        <input type="date" name="date_retard" class="form-control">
-    </div>
-    <div class="mb-2">
-        <label>Motif:</label>
-        <input type="text" name="motif" class="form-control">
-    </div>
-    <button class="btn btn-primary">Enregistrer</button>
-</form>
-<script>
-$(document).ready(function() {
-    $('#user_search').on('input', function() {
-        let query = $(this).val();
-
-        if(query.length < 2) {
-            $('#user_list').hide();
-            return;
-        }
-
-        $.ajax({
-            url: "{{ route('users.autocomplete') }}",
-            type: 'GET',
-            data: { term: query },
-            success: function(data) {
-                let html = '';
-                if(data.length > 0) {
-                    data.forEach(function(user) {
-                        html += `<button type="button" class="list-group-item list-group-item-action" data-id="${user.id}" data-label="${user.label}">${user.label}</button>`;
-                    });
-                } else {
-                    html = '<div class="list-group-item">Aucun résultat</div>';
-                }
-                $('#user_list').html(html).show();
-            }
-        });
-    });
-
-    $('#user_list').on('click', 'button', function() {
-        $('#user_id').val($(this).data('id'));
-        $('#user_search').val($(this).data('label'));
-        $('#user_list').hide();
-    });
-
-    $(document).click(function(e) {
-        if (!$(e.target).closest('#user_search, #user_list').length) {
-            $('#user_list').hide();
-        }
-    });
-});
-</script>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection

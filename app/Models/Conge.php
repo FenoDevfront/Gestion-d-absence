@@ -8,17 +8,18 @@ use App\Models\User;
 
 class Conge extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'employee_id',
+        'user_id',
         'date_debut',
         'date_fin',
         'type_conge',
-        'valide',
         'status'
     ];
 
-    public function employee(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(User::class);
     }
 }
