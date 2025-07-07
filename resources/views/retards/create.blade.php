@@ -1,55 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Nouveau retard</h1>
-    <form action="{{ route('retards.store') }}" method="POST">
-        @csrf
-        <div class="form-group">
-            <label for="employee_id">Employé</label>
-            <input type="text" id="employee_name" class="form-control" placeholder="Nom de l'employé">
-            <input type="hidden" id="employee_id" name="employee_id">
-        </div>
-        <div class="form-group">
-            <label for="date_retard">Date</label>
-            <input type="date" name="date_retard" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="duree">Durée (minutes)</label>
-            <input type="number" name="duree" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="motif">Motif</label>
-            <textarea name="motif" class="form-control" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </form>
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h2 class="h4 mb-0">Déclarer un retard</h2>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('retards.store') }}" method="POST">
+            @csrf
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="date_retard" class="form-label">Date du retard</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-calendar-day"></i></span>
+                        <input type="date" name="date_retard" id="date_retard" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="duree" class="form-label">Durée du retard (en minutes)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                        <input type="number" name="duree" id="duree" class="form-control" placeholder="Ex: 30" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="motif" class="form-label">Motif du retard</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+                        <textarea name="motif" id="motif" class="form-control" rows="4" placeholder="Expliquez brièvement le motif de votre retard..." required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-end">
+                <a href="{{ route('retards.index') }}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary">Déclarer le retard</button>
+            </div>
+        </form>
+    </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-<script>
-$(function() {
-    $("#employee_name").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: "{{ route('users.autocomplete') }}",
-                dataType: "json",
-                data: {
-                    term: request.term
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            $('#employee_id').val(ui.item.id);
-        }
-    });
-});
-</script>
 @endsection

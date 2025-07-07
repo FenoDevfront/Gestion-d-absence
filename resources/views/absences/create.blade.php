@@ -1,55 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Nouvelle absence</h1>
-    <form action="{{ route('absences.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="form-group">
-            <label for="employee_id">Employé</label>
-            <input type="text" id="employee_name" class="form-control" placeholder="Nom de l'employé">
-            <input type="hidden" id="employee_id" name="employee_id">
-        </div>
-        <div class="form-group">
-            <label for="date_absence">Date</label>
-            <input type="date" name="date_absence" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="motif">Motif</label>
-            <textarea name="motif" class="form-control" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="justificatif">Justificatif</label>
-            <input type="file" name="justificatif" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </form>
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h2 class="h4 mb-0">Justifier une absence</h2>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('absences.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label for="date_absence" class="form-label">Date de l'absence</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-calendar-day"></i></span>
+                        <input type="date" name="date_absence" id="date_absence" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="motif" class="form-label">Motif de l'absence</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+                        <textarea name="motif" id="motif" class="form-control" rows="4" placeholder="Expliquez brièvement le motif de votre absence..." required></textarea>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="justificatif" class="form-label">Justificatif (optionnel)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-paperclip"></i></span>
+                        <input type="file" name="justificatif" id="justificatif" class="form-control">
+                    </div>
+                    <div class="form-text">
+                        Vous pouvez joindre un certificat médical ou tout autre document pertinent.
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-end">
+                <a href="{{ route('absences.index') }}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary">Soumettre la justification</button>
+            </div>
+        </form>
+    </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-<script>
-$(function() {
-    $("#employee_name").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: "{{ route('users.autocomplete') }}",
-                dataType: "json",
-                data: {
-                    term: request.term
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            $('#employee_id').val(ui.item.id);
-        }
-    });
-});
-</script>
 @endsection
